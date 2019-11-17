@@ -162,7 +162,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 servers:
-  - url: 'https://virtserver.swaggerhub.com/RobinTTYTeam/Student-API/1.0.0'
+  - url: 'http://localhost:8080/v1'
 components:
   schemas:
     student:

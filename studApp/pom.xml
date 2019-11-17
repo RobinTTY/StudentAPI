@@ -62,7 +62,14 @@
 		<artifactId>openapi-generator-maven-plugin</artifactId>
 		<version>${openapitools.version}</version>
 	  </dependency>
-    </dependencies>
+    
+	  <!-- maybe remove -->
+	  <dependency>
+		<groupId>fish.payara.maven.archetypes</groupId>
+		<artifactId>payara-micro-maven-archetype</artifactId>
+		<version>1.0</version>
+	  </dependency>
+	</dependencies>
   </dependencyManagement>
 
   <dependencies>
