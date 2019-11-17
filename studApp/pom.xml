@@ -26,7 +26,7 @@
     <payara.micro.version>5.182</payara.micro.version>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <h2.version>1.4.196</h2.version>
-	<openapitools.version>4.0.0-Beta3</openapitools.version>
+	<openapitools.version>4.0.0</openapitools.version>
   </properties>
 
   <dependencyManagement>
@@ -46,20 +46,20 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
-	  
-	  <dependency> 
-		<groupId>org.openapitools</groupId>
-		<artifactId>openapi-generator</artifactId> 
-		<version>${openapitools.version}</version>
-	  </dependency> 
+
 	  <dependency>
-		<groupId>org.openapitools</groupId> 
-		<artifactId>openapi-generator-cli</artifactId>
-		<version>${openapitools.version}</version> 
-	  </dependency>
-	  <dependency> 
 		<groupId>org.openapitools</groupId>
-		<artifactId>openapi-generator-maven-plugin</artifactId> 
+		<artifactId>openapi-generator</artifactId>
+		<version>${openapitools.version}</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.openapitools</groupId>
+		<artifactId>openapi-generator-cli</artifactId>
+		<version>${openapitools.version}</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.openapitools</groupId>
+		<artifactId>openapi-generator-maven-plugin</artifactId>
 		<version>${openapitools.version}</version>
 	  </dependency>
     </dependencies>
@@ -148,27 +148,33 @@
       <scope>test</scope>
       <optional>true</optional>
     </dependency>
-	
+
+    <!-- custom dependencies -->
 	<dependency>
-		<groupId>com.google.code.gson</groupId> 
+		<groupId>com.google.code.gson</groupId>
 		<artifactId>gson</artifactId>
-		<version>2.8.5</version> 
+		<version>2.8.5</version>
 	</dependency>
-	<dependency> 
-		<groupId>io.gsonfire</groupId>
-		<artifactId>gson-fire</artifactId> 
-		<version>1.8.3</version>
-	</dependency> 
 	<dependency>
-		<groupId>com.squareup.okhttp3</groupId> 
-		<artifactId>okhttp</artifactId>
-		<version>3.14.1</version> 
+		<groupId>io.gsonfire</groupId>
+		<artifactId>gson-fire</artifactId>
+		<version>1.8.3</version>
 	</dependency>
-	<dependency> 
-		<groupId>com.squareup.okhttp3</groupId>
-		<artifactId>logging-interceptor</artifactId> 
-		<version>3.14.1</version>
-	</dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.14.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>logging-interceptor</artifactId>
+      <version>3.14.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>1.5.23</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -202,20 +208,20 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.22.1</version>
       </plugin>
-	  
-      <plugin> 
+
+      <plugin>
         <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId> 
-        <version>3.3.4</version>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapitools.version}</version>
         <executions>
-          <execution> 
+          <execution>
             <goals>
               <goal>generate</goal>
             </goals>
-            <configuration> 
+            <configuration>
               <inputSpec>${project.basedir}/src/main/resources/studentAPI.yaml</inputSpec>
               <generatorName>java</generatorName>
-              <configOptions> 
+              <configOptions>
                 <sourceFolder>src/gen/java/main</sourceFolder>
                 <dateLibrary>java8</dateLibrary>
                 <java8>true</java8>
