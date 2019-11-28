@@ -1,16 +1,24 @@
 package com.api.org.openapitools.api;
 
 import com.api.org.openapitools.model.Student;
+import com.mongodb.Block;
+import com.mongodb.Cursor;
+import com.mongodb.DBCursor;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.bson.Document;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("/students")
 @Api(description = "the students API")
@@ -25,6 +33,8 @@ public class StudentsApi {
         @ApiResponse(code = 409, message = "an existing item already exists", response = Void.class)
     })
     public Response addStudent() {
+        RestApplication.studentCollection.
+
         return Response.ok().entity("magic!").build();
     }
 
@@ -36,6 +46,17 @@ public class StudentsApi {
         @ApiResponse(code = 500, message = "Internal Server error", response = Void.class)
     })
     public Response listStudents() {
-        return Response.ok().entity("magic!").build();
+        ArrayList<Object> studList = new ArrayList<Object>();
+        MongoCursor<Document> cursor = RestApplication.studentCollection.find().iterator();
+        while(cursor.hasNext()){
+            Document doc = cursor.next();
+            studList.add(doc.values());
+        }
+
+        return Response.ok().entity(studList).build();
     }
+
+    private void addToCollection(){
+
+    };
 }

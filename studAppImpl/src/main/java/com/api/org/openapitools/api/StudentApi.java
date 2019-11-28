@@ -26,6 +26,8 @@ public class StudentApi {
         @ApiResponse(code = 200, message = "unexpected error", response = Error.class)
     })
     public Response getStudentById(@PathParam("id") Integer id) {
+        //RestApplication.studentCollection.find()
+
         Student student = new Student();
         student.setName("test");
         student.setAge(21);

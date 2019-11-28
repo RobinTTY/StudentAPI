@@ -41,6 +41,12 @@ paths:
       summary: Adds a new student to the system
       operationId: addStudent
       description: Adds a new student to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/student'
       responses:
         '201':
           description: Ressource created
