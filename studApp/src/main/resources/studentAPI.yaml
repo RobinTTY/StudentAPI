@@ -42,8 +42,8 @@ paths:
       operationId: addStudent
       description: Adds a new student to the system
       responses:
-        '200':
-          description: pet response
+        '201':
+          description: Ressource created
           content:
             application/json:
               schema:
