@@ -41,6 +41,12 @@ paths:
       summary: Adds a new student to the system
       operationId: addStudent
       description: Adds a new student to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/student'
       responses:
         '201':
           description: Ressource created
@@ -168,16 +174,21 @@ components:
     student:
       type: object
       required:
+        - uuid
         - id
         - name
         - age
         - enrolmentNumber
         - fieldOfStudy
       properties:
-        id:
+        uuid:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        id:
+          type: integer
+          format: int32
+          example: 1
         name:
           type: string
           example: Lula Haverland
