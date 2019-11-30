@@ -1,5 +1,7 @@
 package com.api.org.openapitools.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.Valid;
@@ -7,7 +9,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.UUID;
 
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Student   {
+
   private @Valid UUID uuid;
   private @Valid Integer id;
   private @Valid String name;
@@ -15,14 +20,28 @@ public class Student   {
   private @Valid Integer enrolmentNumber;
   private @Valid String fieldOfStudy;
 
+  public Student(){}
+
+  @JsonCreator
+  public Student(@JsonProperty("uuid") UUID uuid, @JsonProperty("id") Integer id, @JsonProperty("name") String name, @JsonProperty("age") Integer age, @JsonProperty("enrolmentNumber") Integer enrolmentNumber, @JsonProperty("fieldOfStudy") String fieldOfStudy){
+    this.uuid = uuid;
+    this.id = id;
+    this.name = name;
+    this.age = age;
+    this.enrolmentNumber = enrolmentNumber;
+    this.fieldOfStudy = fieldOfStudy;
+  }
+
+  /**
+   **/
   public Student uuid(UUID uuid) {
     this.uuid = uuid;
     return this;
   }
 
-  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", required = true, value = "")
+
+  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", value = "")
   @JsonProperty("uuid")
-  @NotNull
   public UUID getUuid() {
     return uuid;
   }
@@ -38,9 +57,8 @@ public class Student   {
   }
 
 
-  @ApiModelProperty(example = "1", required = true, value = "")
+  @ApiModelProperty(example = "1", value = "")
   @JsonProperty("id")
-  @NotNull
   public Integer getId() {
     return id;
   }
