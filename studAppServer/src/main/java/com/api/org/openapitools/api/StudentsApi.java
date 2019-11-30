@@ -1,15 +1,18 @@
 package com.api.org.openapitools.api;
 
 import com.api.org.openapitools.model.Student;
+import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import io.swagger.annotations.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Path("/students")
@@ -34,24 +37,29 @@ public class StudentsApi {
         //student.setId(maxStudId.getId() + 1);
         //student.setUuid(UUID.randomUUID());
         //RestApplication.studentCollection.insertOne(student);
-        return Response.ok().entity(student).build();
+        return Response.ok(student, MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Produces({ "application/json" })
     @ApiOperation(value = "lists all students", notes = "lists all students currently enrolled ", response = Student.class, responseContainer = "List", tags={ "admins", "guests" })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "operation successful", response = Student.class, responseContainer = "List"),
+        @ApiResponse(code = 200, message = "Operation successful", response = Student.class, responseContainer = "List"),
         @ApiResponse(code = 500, message = "Internal Server error", response = Void.class)
     })
     public Response listStudents() {
-        ArrayList<Object> studList = new ArrayList<>();
-        MongoCursor<Document> cursor = RestApplication.studentCollection.find().iterator();
-        while(cursor.hasNext()){
-            Document doc = cursor.next();
-            studList.add(doc.values());
-        }
+        try{
+            List<Object> studList = new ArrayList<>();
+            MongoCursor<Document> cursor = RestApplication.studentCollection.find().iterator();
+            while(cursor.hasNext()){
+                Document doc = cursor.next();
+                studList.add(doc);
+            }
 
-        return Response.ok().entity(studList).build();
+            return Response.ok(studList, MediaType.APPLICATION_JSON).build();
+        }catch (Exception e){
+            System.out.println(e);
+            return Response.serverError().build();
+        }
     }
 }
