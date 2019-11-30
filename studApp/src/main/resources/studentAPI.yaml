@@ -23,7 +23,7 @@ paths:
       summary: lists all students
       operationId: listStudents
       description: |
-            lists all students currently enrolled
+        lists all students currently enrolled
       responses:
         '200':
           description: operation successful
@@ -37,7 +37,7 @@ paths:
           description: Internal Server error
     post:
       tags:
-       - admins
+        - admins
       summary: Adds a new student to the system
       operationId: addStudent
       description: Adds a new student to the system
@@ -115,7 +115,7 @@ paths:
             schema:
               $ref: '#/components/schemas/student'
         description: student item to update
-        
+
     patch:
       tags:
         - admins
@@ -145,7 +145,7 @@ paths:
             schema:
               $ref: '#/components/schemas/student'
         description: student item to update
-        
+
     delete:
       tags:
         - admins

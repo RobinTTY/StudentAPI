@@ -2,36 +2,49 @@ package com.api.org.openapitools.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.UUID;
 
-
 public class Student   {
-  
-  private @Valid UUID id;
+  private @Valid UUID uuid;
+  private @Valid Integer id;
   private @Valid String name;
   private @Valid Integer age;
   private @Valid Integer enrolmentNumber;
   private @Valid String fieldOfStudy;
 
+  public Student uuid(UUID uuid) {
+    this.uuid = uuid;
+    return this;
+  }
+
+  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", required = true, value = "")
+  @JsonProperty("uuid")
+  @NotNull
+  public UUID getUuid() {
+    return uuid;
+  }
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
+  }
+
   /**
    **/
-  public Student id(UUID id) {
+  public Student id(Integer id) {
     this.id = id;
     return this;
   }
 
-  
-  @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", required = true, value = "")
+
+  @ApiModelProperty(example = "1", required = true, value = "")
   @JsonProperty("id")
   @NotNull
-  public UUID getId() {
+  public Integer getId() {
     return id;
   }
-  public void setId(UUID id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -42,7 +55,7 @@ public class Student   {
     return this;
   }
 
-  
+
   @ApiModelProperty(example = "Lula Haverland", required = true, value = "")
   @JsonProperty("name")
   @NotNull
@@ -60,7 +73,7 @@ public class Student   {
     return this;
   }
 
-  
+
   @ApiModelProperty(example = "21", required = true, value = "")
   @JsonProperty("age")
   @NotNull
@@ -78,7 +91,7 @@ public class Student   {
     return this;
   }
 
-  
+
   @ApiModelProperty(example = "732597", required = true, value = "")
   @JsonProperty("enrolmentNumber")
   @NotNull
@@ -96,7 +109,7 @@ public class Student   {
     return this;
   }
 
-  
+
   @ApiModelProperty(example = "Software Engineering", required = true, value = "")
   @JsonProperty("fieldOfStudy")
   @NotNull
@@ -109,7 +122,7 @@ public class Student   {
 
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
@@ -117,16 +130,17 @@ public class Student   {
       return false;
     }
     Student student = (Student) o;
-    return Objects.equals(id, student.id) &&
-        Objects.equals(name, student.name) &&
-        Objects.equals(age, student.age) &&
-        Objects.equals(enrolmentNumber, student.enrolmentNumber) &&
-        Objects.equals(fieldOfStudy, student.fieldOfStudy);
+    return Objects.equals(uuid, student.uuid) &&
+            Objects.equals(id, student.id) &&
+            Objects.equals(name, student.name) &&
+            Objects.equals(age, student.age) &&
+            Objects.equals(enrolmentNumber, student.enrolmentNumber) &&
+            Objects.equals(fieldOfStudy, student.fieldOfStudy);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, age, enrolmentNumber, fieldOfStudy);
+    return Objects.hash(uuid, id, name, age, enrolmentNumber, fieldOfStudy);
   }
 
   @Override
@@ -134,6 +148,7 @@ public class Student   {
     StringBuilder sb = new StringBuilder();
     sb.append("class Student {\n");
 
+    sb.append("    uuid: ").append(toIndentedString(uuid)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    age: ").append(toIndentedString(age)).append("\n");
@@ -147,7 +162,7 @@ public class Student   {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(Object o) {
+  private String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }

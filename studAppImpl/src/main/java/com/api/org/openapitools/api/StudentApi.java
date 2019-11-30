@@ -1,20 +1,20 @@
 package com.api.org.openapitools.api;
 
-import com.api.org.openapitools.model.Error;
 import com.api.org.openapitools.model.Student;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
-import javax.validation.Valid;
+import com.mongodb.client.model.Filters;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+
+import com.mongodb.client.result.DeleteResult;
+import io.swagger.annotations.*;
+import org.bson.Document;
+
+import javax.validation.Valid;
 import java.util.UUID;
 
 @Path("/student")
 @Api(description = "the student API")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2019-11-28T19:11:58.402472300+01:00[Europe/Berlin]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2019-11-29T08:07:26.085586100+01:00[Europe/Berlin]")
 public class StudentApi {
 
     @GET
@@ -23,19 +23,15 @@ public class StudentApi {
     @ApiOperation(value = "returns student information by id", notes = "returns student information by id", response = Student.class, responseContainer = "List", tags={ "admins", "guests",  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "search results matching criteria", response = Student.class, responseContainer = "List"),
-        @ApiResponse(code = 200, message = "unexpected error", response = Error.class)
+        @ApiResponse(code = 204, message = "No matching database entry found", response = Error.class)
     })
     public Response getStudentById(@PathParam("id") Integer id) {
-        //RestApplication.studentCollection.find()
+        Object stud = RestApplication.studentCollection.find(Filters.eq("id", id));
 
-        Student student = new Student();
-        student.setName("test");
-        student.setAge(21);
-        student.setEnrolmentNumber(744317);
-        student.setFieldOfStudy("Computer Science");
-        student.setId(UUID.fromString(student.getName()));
-
-        return Response.ok().entity("magic!").build();
+        if(stud != null)
+            return Response.ok().entity(stud).build();
+        else
+            return Response.status(204).entity("No matching database entry found.").build();
     }
 
     @PATCH
@@ -61,7 +57,13 @@ public class StudentApi {
         @ApiResponse(code = 200, message = "unexpected error", response = Error.class)
     })
     public Response studentDeletion(@PathParam("id") Integer id) {
-        return Response.ok().entity("magic!").build();
+        Student queryResult = (Student)RestApplication.studentCollection.find(Filters.eq("id", id)).first();
+        DeleteResult deleteResult = RestApplication.studentCollection.deleteOne(new Document("id", queryResult.getId()));
+
+        if(deleteResult.wasAcknowledged())
+            return Response.ok().entity("magic!").build();
+        else
+            return Response.noContent().build();
     }
 
     @PUT

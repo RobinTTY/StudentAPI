@@ -1,41 +1,40 @@
 package com.api.org.openapitools.api;
 
 import com.api.org.openapitools.model.Student;
-import com.mongodb.Block;
-import com.mongodb.Cursor;
-import com.mongodb.DBCursor;
-import com.mongodb.client.FindIterable;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCursor;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import io.swagger.annotations.*;
+import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Path("/students")
 @Api(description = "the students API")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2019-11-28T19:11:58.402472300+01:00[Europe/Berlin]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2019-11-29T08:07:26.085586100+01:00[Europe/Berlin]")
 public class StudentsApi {
 
     @POST
+    @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Adds a new student to the system", notes = "Adds a new student to the system", response = Student.class, tags={ "admins",  })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Ressource created", response = Student.class),
         @ApiResponse(code = 409, message = "an existing item already exists", response = Void.class)
     })
-    public Response addStudent() {
-        RestApplication.studentCollection.
+    public Response addStudent(@Valid Student student) {
+        Object maxStudId = RestApplication.studentCollection.find().sort(new BasicDBObject("id", -1)).first();
+        System.out.println(maxStudId.toString());
+        System.out.println(maxStudId);
+        // we need to be able to cast this object to Student
 
-        return Response.ok().entity("magic!").build();
+        //student.setId(maxStudId.getId() + 1);
+        //student.setUuid(UUID.randomUUID());
+        //RestApplication.studentCollection.insertOne(student);
+        return Response.ok().entity(student).build();
     }
 
     @GET
@@ -46,7 +45,7 @@ public class StudentsApi {
         @ApiResponse(code = 500, message = "Internal Server error", response = Void.class)
     })
     public Response listStudents() {
-        ArrayList<Object> studList = new ArrayList<Object>();
+        ArrayList<Object> studList = new ArrayList<>();
         MongoCursor<Document> cursor = RestApplication.studentCollection.find().iterator();
         while(cursor.hasNext()){
             Document doc = cursor.next();
@@ -55,8 +54,4 @@ public class StudentsApi {
 
         return Response.ok().entity(studList).build();
     }
-
-    private void addToCollection(){
-
-    };
 }
