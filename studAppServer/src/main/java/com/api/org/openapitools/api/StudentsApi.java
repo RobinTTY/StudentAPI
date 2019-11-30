@@ -23,7 +23,7 @@ public class StudentsApi {
     @POST
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Adds a new student to the system", notes = "Adds a new student to the system", response = Student.class, tags={ "admins",  })
+    @ApiOperation(value = "Adds a new student to the system", notes = "Adds a new student to the system", response = Student.class, tags={ "admins", "guests"  })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Ressource created", response = Student.class),
         @ApiResponse(code = 409, message = "an existing item already exists", response = Void.class)
