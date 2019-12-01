@@ -1,21 +1,19 @@
 package com.api.org.openapitools.api;
 
 import com.api.org.openapitools.model.Student;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCursor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.bson.Document;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Path("/students")
 @Api(description = "the students API")
@@ -32,22 +30,15 @@ public class StudentsApi {
     })
     public Response addStudent(@Valid Student student) {
         // get max student id
-        Object maxStudId = RestApplication.studentCollection.find().sort(new BasicDBObject("id", -1)).first();
+        Student maxIdStudent = (Student)RestApplication.studentCollection.find().sort(new BasicDBObject("_id", -1)).first();
 
-        // serialize student object
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Student stud = mapper.readValue(maxStudId.toString(), Student.class);
-            System.out.println("id:" + stud.getId());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // we need to be able to cast this object to Student
+        // set id, uuid automatically
+        student.setId(maxIdStudent.getId() + 1);
+        student.setUuid(UUID.randomUUID());
 
-        //student.setId(maxStudId.getId() + 1);
-        //student.setUuid(UUID.randomUUID());
-        //RestApplication.studentCollection.insertOne(student);
-        return Response.ok(maxStudId, MediaType.APPLICATION_JSON).build();
+        // add to database
+        RestApplication.studentCollection.insertOne(student);
+        return Response.ok(student, MediaType.APPLICATION_JSON).build();
     }
 
     @GET

@@ -4,14 +4,11 @@ import com.api.org.openapitools.model.Student;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
+import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-
 import java.util.ArrayList;
 import java.util.UUID;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class StudentDatabase {
     private MongoDatabase studentDatabase;
@@ -49,8 +46,8 @@ public class StudentDatabase {
                 "mongodb+srv://Robin:yQjPtQ4JzbcTUC9Rzctx@cluster0-qdzqz.mongodb.net/test?retryWrites=true&w=majority");
 
         // this is needed to be able to translate bson documents to and from POJO
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+        CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
+                CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         MongoClient mongoClient = new MongoClient(uri);
         studentDatabase = mongoClient.getDatabase("StudentDB").withCodecRegistry(pojoCodecRegistry);
