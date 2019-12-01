@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.Document;
-
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -46,36 +45,13 @@ public class StudentApi {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Partial update of student information", notes = "", response = Void.class, tags={  })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Item updated", response = Void.class),
         @ApiResponse(code = 400, message = "invalid input, object invalid", response = Void.class),
         @ApiResponse(code = 500, message = "Internal Server error", response = Error.class)
     })
     public Response partialUpdateStudent(@PathParam("id") Integer id, Student student) {
-        Student stud = (Student)RestApplication.studentCollection.find(Filters.eq("_id", id)).first();
-        Map<String, Object> updateMap = new HashMap<>();
-
-        if(stud != null){
-            // reflection magic, update values of Student but ignore uuid/id since they are set automatically
-            try{
-                for (PropertyDescriptor pd : Introspector.getBeanInfo(Student.class).getPropertyDescriptors()) {
-                    if(!pd.getName().equals("uuid") && !pd.getName().equals("id"))
-                        if (pd.getReadMethod() != null && !"class".equals(pd.getName())){
-                            Object value = pd.getReadMethod().invoke(student);
-                            if(value != null)
-                                updateMap.put(pd.getName(), value);
-                        }
-
-                }
-            }catch(Exception e){}
-
-            UpdateResult result = RestApplication.studentCollection.updateOne(Filters.eq("_id", id), new Document("$set", new Document(updateMap)));
-            System.out.println(result);
-            stud = (Student)RestApplication.studentCollection.find(Filters.eq("_id", id)).first();
-            return Response.ok(stud, MediaType.APPLICATION_JSON).build();
-        }
-        else
-            return Response.status(Response.Status.NO_CONTENT).build();
+        return internalUpdateStudent(id, student);
     }
 
     @DELETE
@@ -93,9 +69,9 @@ public class StudentApi {
 
         DeleteResult deleteResult = RestApplication.studentCollection.deleteOne(new Document("_id", queryResult.getId()));
         if(deleteResult.wasAcknowledged())
-            return Response.ok().entity("magic!").build();
+            return Response.ok().entity("Entity removed.").build();
         else
-            return Response.noContent().build();
+            return Response.noContent().entity("No matching entity").build();
     }
 
     @PUT
@@ -106,9 +82,36 @@ public class StudentApi {
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Item updated", response = Void.class),
         @ApiResponse(code = 400, message = "Invalid input, object invalid", response = Void.class),
-        @ApiResponse(code = 200, message = "Unexpected error", response = Error.class)
+        @ApiResponse(code = 500, message = "Internal Server error", response = Error.class)
     })
     public Response updateStudent(@PathParam("id") Integer id,@Valid Student student) {
-        return Response.ok().entity("magic!").build();
+        return internalUpdateStudent(id, student);
+    }
+
+    // method doesn't care about partial or full update, could extract more helper methods here to generalize for more put/patch methods
+    private Response internalUpdateStudent(@PathParam("id") Integer id, Student student) {
+        Student stud = (Student) RestApplication.studentCollection.find(Filters.eq("_id", id)).first();
+        Map<String, Object> updateMap = new HashMap<>();
+
+        if(stud == null)
+            return Response.status(Response.Status.NO_CONTENT).build();
+
+        // reflection magic, update values of Student but ignore uuid/id since they are set automatically
+        try{
+            for (PropertyDescriptor pd : Introspector.getBeanInfo(Student.class).getPropertyDescriptors()) {
+                if(!pd.getName().equals("uuid") && !pd.getName().equals("id"))
+                    if (pd.getReadMethod() != null && !"class".equals(pd.getName())){
+                        Object value = pd.getReadMethod().invoke(student);
+                        if(value != null)
+                            updateMap.put(pd.getName(), value);
+                    }
+            }
+        }catch(Exception e){
+            return Response.serverError().entity("Internal Server error.").build();
+        }
+
+        UpdateResult result = RestApplication.studentCollection.updateOne(Filters.eq("_id", id), new Document("$set", new Document(updateMap)));
+        stud = (Student)RestApplication.studentCollection.find(Filters.eq("_id", id)).first();
+        return Response.ok(stud, MediaType.APPLICATION_JSON).build();
     }
 }
