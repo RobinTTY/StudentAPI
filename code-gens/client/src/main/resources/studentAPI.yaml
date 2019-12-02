@@ -47,7 +47,7 @@ paths:
         '409':
           description: An existing item already exists
 
-  /student/{id}:
+  /students/{id}:
     get:
       summary: returns student information by id
       operationId: getStudentById
